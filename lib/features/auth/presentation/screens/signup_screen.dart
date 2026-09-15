@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_field.dart';
 
@@ -43,7 +45,7 @@ class SignupScreen extends StatelessWidget {
                   label: 'Create account',
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      Navigator.of(context).pushReplacementNamed('/home');
+                      context.go(RouteNames.home);
                     }
                   },
                 ),

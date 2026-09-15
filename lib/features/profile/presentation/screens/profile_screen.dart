@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/routes/route_names.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -10,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Profile'),
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+            onPressed: () => context.push(RouteNames.settings),
             icon: const Icon(Icons.settings_outlined),
           ),
         ],

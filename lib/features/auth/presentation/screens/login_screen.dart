@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_field.dart';
 
@@ -52,14 +54,14 @@ class LoginScreen extends StatelessWidget {
                   label: 'Login',
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      Navigator.of(context).pushReplacementNamed('/home');
+                      context.go(RouteNames.home);
                     }
                   },
                 ),
                 const SizedBox(height: 18),
                 Center(
                   child: TextButton(
-                    onPressed: () => Navigator.of(context).pushNamed('/signup'),
+                    onPressed: () => context.push(RouteNames.signup),
                     child: const Text('Create an account'),
                   ),
                 ),

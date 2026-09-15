@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/routes/route_names.dart';
 import '../widgets/onboarding_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -88,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           curve: Curves.easeInOut,
                         );
                       } else {
-                        Navigator.of(context).pushReplacementNamed('/login');
+                        context.go(RouteNames.login);
                       }
                     },
                     child: Text(_currentPage == _pages.length - 1 ? 'Start' : 'Next'),

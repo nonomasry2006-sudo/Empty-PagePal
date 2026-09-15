@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/book_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,7 +14,7 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Home'),
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+            onPressed: () => context.push(RouteNames.settings),
             icon: const Icon(Icons.settings_outlined),
           ),
         ],
