@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/routes/route_names.dart';
+import '../../../../core/routes/route_names.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -21,9 +21,9 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 48,
-              backgroundImage: const NetworkImage(
+              backgroundImage: NetworkImage(
                 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250&auto=format&fit=crop&q=80',
               ),
             ),
@@ -35,9 +35,9 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text('Passionate reader • software engineering student'),
             const SizedBox(height: 24),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
+              children: [
                 _Stat(label: 'Books Read', value: '14'),
                 _Stat(label: 'Day Streak', value: '12'),
                 _Stat(label: 'Pages', value: '3420'),

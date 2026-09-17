@@ -21,7 +21,7 @@ class OnboardingPage extends StatelessWidget {
             width: 220,
             height: 220,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(32),
             ),
             child: const Icon(Icons.menu_book_rounded, size: 100),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/routes/route_names.dart';
-import '../../../core/widgets/book_card.dart';
-
+import '../../../../core/routes/route_names.dart';
+import '../../../../core/widgets/book_card.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -63,9 +62,9 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text('Your shelves', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
-            _ShelfTile(label: 'Want to Read', count: '28 books'),
-            _ShelfTile(label: 'Reading Now', count: '2 books'),
-            _ShelfTile(label: 'Finished', count: '14 books'),
+            const _ShelfTile(label: 'Want to Read', count: '28 books'),
+            const _ShelfTile(label: 'Reading Now', count: '2 books'),
+            const _ShelfTile(label: 'Finished', count: '14 books'),
           ],
         ),
       ),

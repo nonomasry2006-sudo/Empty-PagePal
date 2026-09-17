@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_cubit.dart';
 
 class BookReadingTrackerApp extends StatelessWidget {
   const BookReadingTrackerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return MaterialApp.router(
-            title: 'Book Reading Tracker',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeMode,
-            routerConfig: AppRouter.router,
-          );
-        },
-      ),
+    return MaterialApp.router(
+      title: 'PagePal',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
+      themeMode: ThemeMode.dark,
+      routerConfig: AppRouter.router,
     );
   }
 }
