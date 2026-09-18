@@ -5,12 +5,19 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/library/presentation/screens/library_screen.dart';
 import 'route_names.dart';
+
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.onboarding,
+    initialLocation: RouteNames.library,
     routes: [
+      GoRoute(
+        path: RouteNames.library,
+        name: RouteNames.library,
+        builder: (context, state) => const LibraryScreen(),
+      ),
       GoRoute(
         path: RouteNames.onboarding,
         name: RouteNames.onboarding,
