@@ -14,7 +14,7 @@ enum ShelfStatus {
 }
 
 @HiveType(typeId: 0)
-class ShelfBookModel {
+class ShelfBookModel extends HiveObject {
   @HiveField(0)
   final BookModel book;
 

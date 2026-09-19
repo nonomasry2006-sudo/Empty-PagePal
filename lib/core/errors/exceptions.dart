@@ -1,16 +1,8 @@
-class AppException implements Exception {
-  const AppException(this.message);
-
+class ServerException implements Exception {
   final String message;
-
-  @override
-  String toString() => 'AppException: $message';
+  ServerException(this.message);
 }
 
-class NetworkException extends AppException {
-  const NetworkException(super.message);
-}
-
-class CacheException extends AppException {
-  const CacheException(super.message);
+class NetworkException implements Exception {
+  NetworkException();
 }

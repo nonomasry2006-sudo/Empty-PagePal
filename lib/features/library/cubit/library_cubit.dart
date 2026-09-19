@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../data/library_repository.dart';
 import '../models/shelf_book_model.dart';
 import 'library_state.dart';
-// Note: Ensure this import path matches where BookModel is located
-import '../../explore/models/book_model.dart'; 
 
 class LibraryCubit extends Cubit<LibraryState> {
   final LibraryRepository _repository;
@@ -11,35 +10,48 @@ class LibraryCubit extends Cubit<LibraryState> {
   LibraryCubit(this._repository) : super(LibraryInitial());
 
   void loadLibrary() {
+    print('CUBIT: loadLibrary called');
     emit(LibraryLoading());
     try {
       final allBooks = _repository.getAllBooks();
-      
+      print('CUBIT: getAllBooks returned ${allBooks.length}');
+
       if (allBooks.isEmpty) {
+        print('CUBIT: library is empty');
         emit(LibraryEmpty());
         return;
       }
 
-      final wantToRead = allBooks.where((b) => b.status == ShelfStatus.wantToRead).toList();
-      final reading = allBooks.where((b) => b.status == ShelfStatus.reading).toList();
-      final finished = allBooks.where((b) => b.status == ShelfStatus.finished).toList();
+      final wantToRead =
+          allBooks.where((b) => b.status == ShelfStatus.wantToRead).toList();
+      final reading =
+          allBooks.where((b) => b.status == ShelfStatus.reading).toList();
+      final finished =
+          allBooks.where((b) => b.status == ShelfStatus.finished).toList();
+
+      print('CUBIT: wantToRead=${wantToRead.length} reading=${reading.length} finished=${finished.length}');
 
       emit(LibraryLoaded(
         wantToRead: wantToRead,
         reading: reading,
         finished: finished,
       ));
+      print('CUBIT: emitted LibraryLoaded');
     } catch (e) {
+      print('CUBIT ERROR loadLibrary: $e');
       emit(LibraryError("Failed to load library: ${e.toString()}"));
     }
   }
 
   Future<void> addBook(ShelfBookModel book) async {
+    print('CUBIT: addBook called - ${book.book.title}');
     try {
       await _repository.saveBook(book);
+      print('CUBIT: saved to repository');
       emit(LibraryUpdated());
-      loadLibrary(); // Reload to refresh the categorized shelves
+      loadLibrary();
     } catch (e) {
+      print('CUBIT ERROR addBook: $e');
       emit(LibraryError("Failed to add book: ${e.toString()}"));
     }
   }
@@ -56,7 +68,6 @@ class LibraryCubit extends Cubit<LibraryState> {
 
   Future<void> updateBookProgress(ShelfBookModel book, int newPage) async {
     try {
-      // Create a copy of the book with the new page count
       final updatedBook = ShelfBookModel(
         book: book.book,
         status: book.status,
@@ -71,9 +82,11 @@ class LibraryCubit extends Cubit<LibraryState> {
     }
   }
 
-  Future<void> updateShelfStatus(ShelfBookModel book, ShelfStatus newStatus) async {
+  Future<void> updateShelfStatus(
+    ShelfBookModel book,
+    ShelfStatus newStatus,
+  ) async {
     try {
-      // Create a copy of the book with the new shelf status
       final updatedBook = ShelfBookModel(
         book: book.book,
         status: newStatus,
@@ -86,25 +99,5 @@ class LibraryCubit extends Cubit<LibraryState> {
     } catch (e) {
       emit(LibraryError("Failed to move book: ${e.toString()}"));
     }
-  }
-
-  // ---> MOVED INSIDE THE CLASS AND REFACTORED <---
-  Future<void> addDummyBook() async {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-    
-    final dummyShelfBook = ShelfBookModel(
-      book: BookModel(
-        id: id,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        coverUrl: 'https://covers.openlibrary.org/b/id/7222246-L.jpg',
-      ),
-      status: ShelfStatus.reading, // Defaults to Reading tab
-      currentPage: 42,
-      addedAt: DateTime.now(),
-    );
-
-    // Reuses your existing perfectly written addBook method
-    await addBook(dummyShelfBook); 
   }
 }

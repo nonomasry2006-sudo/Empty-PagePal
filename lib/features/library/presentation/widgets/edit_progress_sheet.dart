@@ -9,10 +9,10 @@ class EditProgressSheet extends StatefulWidget {
   final int totalPages; 
 
   const EditProgressSheet({
-    Key? key,
+    super.key,
     required this.shelfBook,
     this.totalPages = 300, 
-  }) : super(key: key);
+  });
 
   @override
   State<EditProgressSheet> createState() => _EditProgressSheetState();
@@ -34,9 +34,9 @@ class _EditProgressSheetState extends State<EditProgressSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             'Update Progress',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -53,7 +53,7 @@ class _EditProgressSheetState extends State<EditProgressSheet> {
           // The Progress Slider
           Row(
             children: [
-              Text('0', style: const TextStyle(color: Colors.white54)),
+              const Text('0', style: TextStyle(color: Colors.white54)),
               Expanded(
                 child: Slider(
                   value: _currentValue,

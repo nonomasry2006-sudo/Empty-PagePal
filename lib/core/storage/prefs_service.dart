@@ -3,25 +3,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PrefsService {
   PrefsService._();
 
-  static final PrefsService instance = PrefsService._();
+  static const String _onboardingKey = 'onboarding_seen';
 
-  Future<void> setBool(String key, bool value) async {
+  static Future<void> setOnboardingSeen(bool seen) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(key, value);
+    await prefs.setBool(_onboardingKey, seen);
   }
 
-  Future<bool> getBool(String key, {bool defaultValue = false}) async {
+  static Future<bool> hasSeenOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(key) ?? defaultValue;
+    return prefs.getBool(_onboardingKey) ?? false;
   }
 
-  Future<void> setString(String key, String value) async {
+  static Future<void> clearOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, value);
-  }
-
-  Future<String?> getString(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
+    await prefs.remove(_onboardingKey);
   }
 }

@@ -7,11 +7,15 @@ class LibraryRepository {
   LibraryRepository(this._localDataSource);
 
   List<ShelfBookModel> getAllBooks() {
-    return _localDataSource.getBooks();
+    final books = _localDataSource.getBooks();
+    print('REPO: getAllBooks returned ${books.length}');
+    return books;
   }
 
   Future<void> saveBook(ShelfBookModel book) async {
+    print('REPO: saveBook - ${book.book.title}');
     await _localDataSource.addBook(book);
+    print('REPO: saved');
   }
 
   Future<void> deleteBook(String bookId) async {
