@@ -8,6 +8,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/gradient_background.dart';
+import '../../../sessions/cubit/notes_cubit.dart';
+import '../../../sessions/cubit/notes_state.dart';
+import '../../../sessions/presentation/widgets/note_card.dart';
+import '../../../sessions/presentation/widgets/note_form_sheet.dart';
 import '../../cubit/book_details_cubit.dart';
 import '../../cubit/book_details_state.dart';
 import '../../models/book_model.dart';
@@ -186,7 +190,7 @@ class _BookDetailsView extends StatelessWidget {
             ],
           ),
 
-          // ── Loading indicator while fetching full details
+          // ── Loading indicator
           if (state is BookDetailsLoading) ...[
             const SizedBox(height: 24),
             const Center(child: CircularProgressIndicator()),
@@ -232,6 +236,10 @@ class _BookDetailsView extends StatelessWidget {
           // ── Add to Library
           const SizedBox(height: 32),
           AddToLibraryButton(book: book),
+
+          // ── Notes Section
+          const SizedBox(height: 32),
+          _NotesSection(book: book),
         ],
       ),
     );
@@ -241,6 +249,141 @@ class _BookDetailsView extends StatelessWidget {
     return Container(
       color: Colors.white.withValues(alpha: 0.08),
       child: const Icon(Icons.book, size: 64),
+    );
+  }
+}
+
+class _NotesSection extends StatefulWidget {
+  final BookModel book;
+
+  const _NotesSection({required this.book});
+
+  @override
+  State<_NotesSection> createState() => _NotesSectionState();
+}
+
+class _NotesSectionState extends State<_NotesSection> {
+  @override
+  void initState() {
+    super.initState();
+    // Load notes for this specific book
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<NotesCubit>().loadForBook(widget.book.id);
+      }
+    });
+  }
+
+  void _openAddNoteSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => NoteFormSheet(
+        bookTitle: widget.book.title,
+        onSave: (text) {
+          context.read<NotesCubit>().addNote(
+                bookId: widget.book.id,
+                bookTitle: widget.book.title,
+                text: text,
+              );
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Header with Add button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('My Notes', style: theme.textTheme.titleMedium),
+            TextButton.icon(
+              onPressed: _openAddNoteSheet,
+              icon: const Icon(Icons.add_rounded, size: 18),
+              label: const Text('Add Note'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        // Notes list
+        BlocBuilder<NotesCubit, NotesState>(
+          builder: (context, state) {
+            if (state is NotesLoading) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            if (state is NotesError) {
+              return GlassCard(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
+              );
+            }
+
+            if (state is NotesEmpty) {
+              return GlassCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.note_alt_outlined,
+                      size: 32,
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'No notes yet',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Tap "Add Note" to write your thoughts',
+                      style: theme.textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is NotesLoaded) {
+              return Column(
+                children: state.notes
+                    .map(
+                      (note) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: NoteCard(
+                          note: note,
+                          onDelete: () {
+                            context.read<NotesCubit>().deleteNote(
+                                  id: note.id,
+                                  bookId: widget.book.id,
+                                );
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
     );
   }
 }

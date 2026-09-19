@@ -10,7 +10,7 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/empty_widget.dart';
 import '../widgets/shelf_book_card.dart';
-import '../widgets/edit_progress_sheet.dart';
+import '../widgets/progress_sheet.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -99,28 +99,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
           onLongPress: () => _showMoveBookBottomSheet(context, book),
           child: ShelfBookCard(
             shelfBook: book,
-            onTap: () => _showEditProgressSheet(context, book),
+            onTap: () => ProgressSheet.show(context, book),
           ),
         );
       },
-    );
-  }
-
-  void _showEditProgressSheet(BuildContext context, ShelfBookModel book) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      useSafeArea: false,
-      barrierColor: Colors.black54,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF1a1a1a),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.only(bottom: 100),
-        child: EditProgressSheet(shelfBook: book),
-      ),
     );
   }
 
