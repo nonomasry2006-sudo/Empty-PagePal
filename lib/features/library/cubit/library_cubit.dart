@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/library_repository.dart';
 import '../models/shelf_book_model.dart';
 import 'library_state.dart';
+// Note: Ensure this import path matches where BookModel is located
+import '../../explore/models/book_model.dart'; 
 
 class LibraryCubit extends Cubit<LibraryState> {
   final LibraryRepository _repository;
@@ -84,5 +86,25 @@ class LibraryCubit extends Cubit<LibraryState> {
     } catch (e) {
       emit(LibraryError("Failed to move book: ${e.toString()}"));
     }
+  }
+
+  // ---> MOVED INSIDE THE CLASS AND REFACTORED <---
+  Future<void> addDummyBook() async {
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    final dummyShelfBook = ShelfBookModel(
+      book: BookModel(
+        id: id,
+        title: 'The Great Gatsby',
+        author: 'F. Scott Fitzgerald',
+        coverUrl: 'https://covers.openlibrary.org/b/id/7222246-L.jpg',
+      ),
+      status: ShelfStatus.reading, // Defaults to Reading tab
+      currentPage: 42,
+      addedAt: DateTime.now(),
+    );
+
+    // Reuses your existing perfectly written addBook method
+    await addBook(dummyShelfBook); 
   }
 }
