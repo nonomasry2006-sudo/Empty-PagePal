@@ -10,11 +10,14 @@ class LibraryCubit extends Cubit<LibraryState> {
   LibraryCubit(this._repository) : super(LibraryInitial());
 
   void loadLibrary() {
+    print('CUBIT: loadLibrary called');
     emit(LibraryLoading());
     try {
       final allBooks = _repository.getAllBooks();
+      print('CUBIT: getAllBooks returned ${allBooks.length}');
 
       if (allBooks.isEmpty) {
+        print('CUBIT: library is empty');
         emit(LibraryEmpty());
         return;
       }
@@ -26,22 +29,29 @@ class LibraryCubit extends Cubit<LibraryState> {
       final finished =
           allBooks.where((b) => b.status == ShelfStatus.finished).toList();
 
+      print('CUBIT: wantToRead=${wantToRead.length} reading=${reading.length} finished=${finished.length}');
+
       emit(LibraryLoaded(
         wantToRead: wantToRead,
         reading: reading,
         finished: finished,
       ));
+      print('CUBIT: emitted LibraryLoaded');
     } catch (e) {
+      print('CUBIT ERROR loadLibrary: $e');
       emit(LibraryError("Failed to load library: ${e.toString()}"));
     }
   }
 
   Future<void> addBook(ShelfBookModel book) async {
+    print('CUBIT: addBook called - ${book.book.title}');
     try {
       await _repository.saveBook(book);
+      print('CUBIT: saved to repository');
       emit(LibraryUpdated());
       loadLibrary();
     } catch (e) {
+      print('CUBIT ERROR addBook: $e');
       emit(LibraryError("Failed to add book: ${e.toString()}"));
     }
   }

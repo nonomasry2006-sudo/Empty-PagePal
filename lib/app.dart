@@ -13,11 +13,13 @@ class BookReadingTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LibraryCubit(
-        LibraryRepository(
-          LibraryLocalDataSource(),
-        ),
-      ),
+      create: (context) {
+        final cubit = LibraryCubit(
+          LibraryRepository(LibraryLocalDataSource()),
+        );
+        cubit.loadLibrary();
+        return cubit;
+      },
       child: MaterialApp.router(
         title: 'PagePal',
         debugShowCheckedModeBanner: false,

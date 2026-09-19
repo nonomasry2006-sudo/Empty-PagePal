@@ -11,6 +11,7 @@ import '../../../../core/widgets/gradient_background.dart';
 import '../../cubit/book_details_cubit.dart';
 import '../../cubit/book_details_state.dart';
 import '../../models/book_model.dart';
+import '../widgets/add_to_library_button.dart';
 
 class BookDetailsScreen extends StatelessWidget {
   final BookModel book;
@@ -228,14 +229,9 @@ class _BookDetailsView extends StatelessWidget {
             ),
           ],
 
-          // ── Placeholder footer
-          const SizedBox(height: 40),
-          Center(
-            child: Text(
-              'More features coming soon',
-              style: theme.textTheme.bodySmall,
-            ),
-          ),
+          // ── Add to Library
+          const SizedBox(height: 32),
+          AddToLibraryButton(book: book),
         ],
       ),
     );

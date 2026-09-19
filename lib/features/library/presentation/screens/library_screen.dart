@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:page_pal/features/library/cubit/library_cubit.dart';
 import 'package:page_pal/features/library/cubit/library_state.dart';
 import 'package:page_pal/features/library/models/shelf_book_model.dart';
+
 import '../../../../core/widgets/gradient_background.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
@@ -45,7 +47,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               Expanded(
                 child: BlocBuilder<LibraryCubit, LibraryState>(
                   builder: (context, state) {
-                    if (state is LibraryLoading) {
+                    if (state is LibraryInitial || state is LibraryLoading) {
                       return const LoadingWidget();
                     } else if (state is LibraryEmpty) {
                       return const EmptyWidget(
@@ -87,6 +89,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
         ),
       );
     }
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: books.length,
@@ -96,54 +99,86 @@ class _LibraryScreenState extends State<LibraryScreen> {
           onLongPress: () => _showMoveBookBottomSheet(context, book),
           child: ShelfBookCard(
             shelfBook: book,
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: const Color(0xFF1a1a1a),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                builder: (context) => EditProgressSheet(shelfBook: book),
-              );
-            },
+            onTap: () => _showEditProgressSheet(context, book),
           ),
         );
       },
     );
   }
 
+  void _showEditProgressSheet(BuildContext context, ShelfBookModel book) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useSafeArea: false,
+      barrierColor: Colors.black54,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF1a1a1a),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.only(bottom: 100),
+        child: EditProgressSheet(shelfBook: book),
+      ),
+    );
+  }
+
   void _showMoveBookBottomSheet(BuildContext context, ShelfBookModel book) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1a1a1a),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Move "${book.book.title}" to:',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useSafeArea: false,
+      barrierColor: Colors.black54,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF1a1a1a),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.only(bottom: 100),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            _buildShelfOption(context, 'Reading', ShelfStatus.reading, book),
-            _buildShelfOption(
-              context,
-              'Want to Read',
-              ShelfStatus.wantToRead,
-              book,
-            ),
-            _buildShelfOption(context, 'Finished', ShelfStatus.finished, book),
-            const SizedBox(height: 10),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                'Move "${book.book.title}" to:',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              _buildShelfOption(context, 'Reading', ShelfStatus.reading, book),
+              _buildShelfOption(
+                context,
+                'Want to Read',
+                ShelfStatus.wantToRead,
+                book,
+              ),
+              _buildShelfOption(
+                context,
+                'Finished',
+                ShelfStatus.finished,
+                book,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
