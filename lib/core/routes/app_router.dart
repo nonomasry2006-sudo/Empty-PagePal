@@ -11,19 +11,34 @@ import '../../features/explore/presentation/screens/explore_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/library/presentation/screens/library_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+<<<<<<< HEAD
 import '../../shared/main_shell.dart';
+=======
+import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/library/presentation/screens/library_screen.dart';
+>>>>>>> dev
 import 'route_names.dart';
+
 
 class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
+<<<<<<< HEAD
     initialLocation: RouteNames.splash,
+=======
+    initialLocation: RouteNames.library,
+>>>>>>> dev
     routes: [
       // ── Standalone screens (no bottom nav)
       GoRoute(
         path: RouteNames.splash,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.library,
+        name: RouteNames.library,
+        builder: (context, state) => const LibraryScreen(),
       ),
       GoRoute(
         path: RouteNames.onboarding,
