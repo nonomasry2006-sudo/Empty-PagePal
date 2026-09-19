@@ -8,6 +8,7 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/empty_widget.dart';
 import '../widgets/shelf_book_card.dart';
+import '../widgets/edit_progress_sheet.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({Key? key}) : super(key: key);
@@ -28,6 +29,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            context.read<LibraryCubit>().addDummyBook();
+          },
+          backgroundColor: Colors.amber,
+          icon: const Icon(Icons.add, color: Colors.black),
+          label: const Text(
+            'Add Test Book', 
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
+          ),
+        ),
         body: GradientBackground(
           child: Column(
             children: [
@@ -82,9 +94,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
       itemCount: books.length,
       itemBuilder: (context, index) {
         final book = books[index];
-        return ShelfBookCard(
-          shelfBook: book,
-          onTap: () => _showMoveBookBottomSheet(context, book),
+        return GestureDetector(
+          onLongPress: () => _showMoveBookBottomSheet(context, book),
+          child: ShelfBookCard(
+            shelfBook: book,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: const Color(0xFF1a1a1a),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (context) => EditProgressSheet(shelfBook: book),
+              );
+            },
+          ),
         );
       },
     );
