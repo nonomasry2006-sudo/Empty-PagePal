@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../data/library_repository.dart';
 import '../models/shelf_book_model.dart';
 import 'library_state.dart';
-// Note: Ensure this import path matches where BookModel is located
-import '../../explore/models/book_model.dart'; 
 
 class LibraryCubit extends Cubit<LibraryState> {
   final LibraryRepository _repository;
@@ -14,15 +13,18 @@ class LibraryCubit extends Cubit<LibraryState> {
     emit(LibraryLoading());
     try {
       final allBooks = _repository.getAllBooks();
-      
+
       if (allBooks.isEmpty) {
         emit(LibraryEmpty());
         return;
       }
 
-      final wantToRead = allBooks.where((b) => b.status == ShelfStatus.wantToRead).toList();
-      final reading = allBooks.where((b) => b.status == ShelfStatus.reading).toList();
-      final finished = allBooks.where((b) => b.status == ShelfStatus.finished).toList();
+      final wantToRead =
+          allBooks.where((b) => b.status == ShelfStatus.wantToRead).toList();
+      final reading =
+          allBooks.where((b) => b.status == ShelfStatus.reading).toList();
+      final finished =
+          allBooks.where((b) => b.status == ShelfStatus.finished).toList();
 
       emit(LibraryLoaded(
         wantToRead: wantToRead,
@@ -38,7 +40,7 @@ class LibraryCubit extends Cubit<LibraryState> {
     try {
       await _repository.saveBook(book);
       emit(LibraryUpdated());
-      loadLibrary(); // Reload to refresh the categorized shelves
+      loadLibrary();
     } catch (e) {
       emit(LibraryError("Failed to add book: ${e.toString()}"));
     }
@@ -56,7 +58,6 @@ class LibraryCubit extends Cubit<LibraryState> {
 
   Future<void> updateBookProgress(ShelfBookModel book, int newPage) async {
     try {
-      // Create a copy of the book with the new page count
       final updatedBook = ShelfBookModel(
         book: book.book,
         status: book.status,
@@ -71,9 +72,11 @@ class LibraryCubit extends Cubit<LibraryState> {
     }
   }
 
-  Future<void> updateShelfStatus(ShelfBookModel book, ShelfStatus newStatus) async {
+  Future<void> updateShelfStatus(
+    ShelfBookModel book,
+    ShelfStatus newStatus,
+  ) async {
     try {
-      // Create a copy of the book with the new shelf status
       final updatedBook = ShelfBookModel(
         book: book.book,
         status: newStatus,
@@ -86,25 +89,5 @@ class LibraryCubit extends Cubit<LibraryState> {
     } catch (e) {
       emit(LibraryError("Failed to move book: ${e.toString()}"));
     }
-  }
-
-  // ---> MOVED INSIDE THE CLASS AND REFACTORED <---
-  Future<void> addDummyBook() async {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-    
-    final dummyShelfBook = ShelfBookModel(
-      book: BookModel(
-        id: id,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        coverUrl: 'https://covers.openlibrary.org/b/id/7222246-L.jpg',
-      ),
-      status: ShelfStatus.reading, // Defaults to Reading tab
-      currentPage: 42,
-      addedAt: DateTime.now(),
-    );
-
-    // Reuses your existing perfectly written addBook method
-    await addBook(dummyShelfBook); 
   }
 }

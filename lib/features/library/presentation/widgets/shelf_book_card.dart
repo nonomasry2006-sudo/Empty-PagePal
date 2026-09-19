@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // Added to use context.read
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:page_pal/features/library/cubit/library_cubit.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../models/shelf_book_model.dart';
-
 
 class ShelfBookCard extends StatelessWidget {
   final ShelfBookModel shelfBook;
@@ -21,16 +21,13 @@ class ShelfBookCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      // Wrapped the card in Dismissible for swipe-to-delete
       child: Dismissible(
-        key: Key(book.id), // Unique key so Flutter knows exactly which book is being swiped
-        direction: DismissDirection.endToStart, // Only allow swiping from right to left
-        
-        // The red background that reveals underneath as you swipe
+        key: Key(book.id),
+        direction: DismissDirection.endToStart,
         background: Container(
           decoration: BoxDecoration(
-            color: Colors.red.shade800.withOpacity(0.9), // Matches the dark theme aesthetic
-            borderRadius: BorderRadius.circular(16), // Matches typical GlassCard radius
+            color: Colors.red.shade800.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(16),
           ),
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: 20.0),
@@ -40,11 +37,9 @@ class ShelfBookCard extends StatelessWidget {
             size: 30,
           ),
         ),
-        
-        // The action triggered when the swipe is fully completed
         onDismissed: (direction) {
           context.read<LibraryCubit>().removeBook(book.id);
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('${book.title} removed from library'),
@@ -53,8 +48,6 @@ class ShelfBookCard extends StatelessWidget {
             ),
           );
         },
-        
-        // Your original UI remains completely untouched here
         child: GestureDetector(
           onTap: onTap,
           child: GlassCard(
@@ -62,7 +55,6 @@ class ShelfBookCard extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  // Book Cover
                   Container(
                     width: 65,
                     height: 100,
@@ -77,14 +69,15 @@ class ShelfBookCard extends StatelessWidget {
                               book.coverUrl!,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.book, color: Colors.white54),
+                                  const Icon(
+                                Icons.book,
+                                color: Colors.white54,
+                              ),
                             ),
                           )
                         : const Icon(Icons.book, color: Colors.white54),
                   ),
                   const SizedBox(width: 16),
-
-                  // Book Info & Progress
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +94,9 @@ class ShelfBookCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          book.author,
+                          book.authors.isEmpty
+                              ? 'Unknown author'
+                              : book.authors.join(', '),
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
@@ -110,11 +105,13 @@ class ShelfBookCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 12),
-
-                        // Golden Progress Indicator
                         Row(
                           children: [
-                            const Icon(Icons.menu_book, color: Colors.amber, size: 16),
+                            const Icon(
+                              Icons.menu_book,
+                              color: Colors.amber,
+                              size: 16,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'Page ${shelfBook.currentPage}',
